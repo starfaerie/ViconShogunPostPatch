@@ -1,0 +1,16 @@
+// Returns the full file path of a file, correcting for path formats which include forward slashes. For example, for 'C:/temp/take25.c3d', 'C:\temp\take25.c3d' will be returned.
+// **IMPORTANT** Input paths MUST be in Windows path format (e.g. C:\\example\\path\\to\\file.txt) to be interpreted correctly by ShogunPost.
+// If the user inputs a filepath with forward slashes (e.g. C:/example/path/to/file.txt) this command will replace them with backslashes using 'strReplace'.
+// Written 03.2024 by https://github.com/starfaerie. Copying Art is an act of love. Love is not subject to law. All text below can be assumed as free of known copyright and redistribution restrictions. Please copy, modify, and redistribute to your heart's content.
+string $inputFilePath;
+input $inputFilePath "" -description "Returns the full file path of a file, correcting for path formats which include forward slashes. For example, for 'C:/temp/take25.c3d', 'C:\temp\take25.c3d' will be returned.";
+
+// if no input, throw an error
+if ($inputFilePath == "") {
+	print "Error in 'getFile_internal_pathFix.hsl', -inputFilePath arg is empty." -error;
+	return "";
+}
+
+string $newInputFilePath = `strReplace $inputFilePath "/" "\\"`; // replace all instances of / in the input with \\ to support file paths like 'C:/temp/take25.c3d'
+// print $newInputFilePath;
+return $newInputFilePath;

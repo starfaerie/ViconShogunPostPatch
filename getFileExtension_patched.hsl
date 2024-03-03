@@ -1,0 +1,22 @@
+// Retrieves the extension portion of a file path, excluding the dot. For example, for 'C:/temp/take25.c3d', 'c3d' will be returned.
+// This command is intended to replace the default 'getFileExtension' command in ShogunPost which has a bug introduced in ShogunPost 1.10 that throws an error when accessing either a NetApp volume or a file location that does not yet exist.
+// Written 03.2024 by https://github.com/starfaerie. Copying Art is an act of love. Love is not subject to law. All text below can be assumed as free of known copyright and redistribution restrictions. Please copy, modify, and redistribute to your heart's content.
+string $inputFilePath;
+input $inputFilePath "" -description "Retrieves the extension portion of a file path, excluding the dot. For example, for 'C:/temp/take25.c3d', 'c3d' will be returned. Input paths MUST be in Windows path format (e.g. C:\\example\\path\\to\\file.txt)";
+
+// if no input, throw an error
+if ($inputFilePath == "") {
+	print "Error in 'getFileExtension_patched.hsl', -inputFilePath arg is empty." -error;
+	return "";
+}
+
+string $newInputFilePath = `getFile_internal_pathFix $inputFilePath`; // replace all instances of / in the input with \\ to support file paths like 'C:/temp/take25.c3d'
+
+int $indexOfLastDot = `strReverseFind $newInputFilePath "."`;
+int $lengthOfString = `strLength $newInputFilePath`;
+int $reverseIndexOfLastDot = $lengthOfString - $indexOfLastDot; // getting the difference between the $indexOfLastDot and $lengthOfString because strRight counts from the right rather than the left
+$reverseIndexOfLastDot -= 1; // decrement the index by 1 to exclude the dot in the final output
+
+string $subStringOfInputAfterLastDot = `strRight $newInputFilePath $reverseIndexOfLastDot`;
+// print $subStringOfInputAfterLastDot;
+return $subStringOfInputAfterLastDot;

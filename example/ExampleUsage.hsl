@@ -1,0 +1,38 @@
+boolean $isCL = false;
+string $applicationInfo = `appInfo "exePath" -noFeedback`;
+if (`strFind $applicationInfo "CL.exe" 0` != -1)
+{
+	$isCL = true;
+}
+
+//Get the currently loaded file:
+string $curLoadedFullFilePath;
+if($isCL == false)
+{
+	$curLoadedFullFilePath = `getSavePath -fullPath`;
+}
+else
+{
+	$curLoadedFullFilePath = `getLastFile`;
+}
+print ("Input path: " + $curLoadedFullFilePath);
+
+string $curLoadedFileLocation = `getFileLocation_patched $curLoadedFullFilePath`;
+print ("getFileLocation_patched: " + $curLoadedFileLocation);
+string $curLoadedFileExtension = `getFileExtension_patched $curLoadedFullFilePath`;
+print ("getFileExtension_patched: " + $curLoadedFileExtension);
+string $curLoadedFileName = `getFileName_patched $curLoadedFullFilePath`;
+print ("getFileName_patched: " + $curLoadedFileName);
+string $curLoadedFileTitle = `getFileTitle_patched $curLoadedFullFilePath`;
+print ("getFileTitle_patched: " + $curLoadedFileTitle);
+
+/*
+string $curLoadedFileLocation = `getFileLocation $curLoadedFullFilePath`;
+print ("getFileLocation: " + $curLoadedFileLocation);
+string $curLoadedFileExtension = `getFileExtension $curLoadedFullFilePath`;
+print ("getFileExtension: " + $curLoadedFileExtension);
+string $curLoadedFileName = `getFileName $curLoadedFullFilePath`;
+print ("getFileName: " + $curLoadedFileName);
+string $curLoadedFileTitle = `getFileTitle $curLoadedFullFilePath`;
+print ("getFileTitle: " + $curLoadedFileTitle);
+*/

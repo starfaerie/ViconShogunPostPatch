@@ -1,0 +1,21 @@
+// Returns the file path portion of a file given a full path to an existing file including the last slash, correcting for common filePath delimiter errors. For example, for 'C:/temp/take25.c3d', 'C:\temp\' will be returned.
+// This command is intended to replace the default 'getFileLocation' command in ShogunPost which has a bug introduced in ShogunPost 1.10 that throws an error when accessing either a NetApp volume or a file location that does not yet exist.
+// Written 03.2024 by https://github.com/starfaerie. Copying Art is an act of love. Love is not subject to law. All text below can be assumed as free of known copyright and redistribution restrictions. Please copy, modify, and redistribute to your heart's content.
+string $inputFilePath;
+input $inputFilePath "" -description "Returns the file path portion of a file given a full path to an existing file including the last slash, correcting for common filePath delimiter errors. For example, for 'C:/temp/take25.c3d', 'C:\temp\' will be returned.";
+
+// if no input, throw an error
+if ($inputFilePath == "") {
+	print "Error in 'getFileLocation_patched.hsl', -inputFilePath arg is empty." -error;
+	return "";
+}
+
+string $filePathDelim = "\\";
+string $newInputFilePath = `getFile_internal_pathFix $inputFilePath`; // replace all instances of / in the input with \\ to support file paths like 'C:/temp/take25.c3d'
+
+int $indexOfLastSlash = `strReverseFind $newInputFilePath $filePathDelim`;
+$indexOfLastSlash += 1; // increment the index by 1 to include the slash in the final output
+
+string $subStringOfInputUntilLastSlash = `strLeft $newInputFilePath $indexOfLastSlash`;
+// print $subStringOfInputUntilLastSlash;
+return $subStringOfInputUntilLastSlash;

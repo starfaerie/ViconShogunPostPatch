@@ -1,0 +1,23 @@
+// Retrieves the name portion of a file path, excluding the extension. For example, for "C:/temp/take25.c3d", "take25" will be returned.
+// This command is intended to replace the default 'getFileTitle' command in ShogunPost which has a bug introduced in ShogunPost 1.10 that throws an error when accessing either a NetApp volume or a file location that does not yet exist.
+// Written 03.2024 by https://github.com/starfaerie. Copying Art is an act of love. Love is not subject to law. All text below can be assumed as free of known copyright and redistribution restrictions. Please copy, modify, and redistribute to your heart's content.
+string $inputFilePath;
+input $inputFilePath "" -description "Retrieves the name portion of a file path, excluding the extension. For example, for 'C:/temp/take25.c3d', 'take25' will be returned.";
+
+// if no input, throw an error
+if ($inputFilePath == "") {
+	print "Error in 'getFileName_patched.hsl', -inputFilePath arg is empty." -error;
+	return;
+}
+
+string $newInputFilePath = `getFile_internal_pathFix $inputFilePath`; // replace all instances of / in the input with \\ to support file paths like 'C:/temp/take25.c3d'
+
+int $indexOfLastSlash = `strReverseFind $newInputFilePath "\\"`;
+$indexOfLastSlash += 1; // increment the index by 1 to exclude the slash in the final output
+
+int $indexOfLastDot = `strReverseFind $newInputFilePath "."`;
+int $indexOfLastDotMinusIndexOfLastSlash = $indexOfLastDot - $indexOfLastSlash; // getting the difference between the $indexOfLastDot and $indexOfLastSlash because strMid counts from the firstIndex
+
+string $subStringOfInputExcludingExtension = `strMid $newInputFilePath $indexOfLastSlash $indexOfLastDotMinusIndexOfLastSlash`;
+// print $subStringOfInputExcludingExtension;
+return $subStringOfInputExcludingExtension;
